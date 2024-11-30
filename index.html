@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Boxes</title>
+ <!--  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="style.js"></script> -->
+  <style>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+  }
+
+  .box-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+  }
+
+  .box {
+    width: 150px;
+    height: 100px;
+    background-color: lightgray;
+    text-align: center;
+    line-height: 100px;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .box.expanded {
+    width: 250px;
+    height: 150px;
+    line-height: 150px;
+  }
+
+  .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid black;
+    padding: 20px;
+    z-index: 10;
+  }
+
+  .popup.active {
+    display: block;
+  }
+
+  .options button {
+    margin: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+</style>
+  </style>
+</head>
+<body>
+  <div class="box-container">
+    <div class="box" id="box1">Box 1</div>
+    <div class="box" id="box2">Box 2</div>
+    <div class="box" id="box3">Box 3</div>
+  </div>
+
+  <!-- Options Popups -->
+  <div class="popup" id="popup1">
+    <div class="popup-content">
+      <h3>Options for Box 1</h3>
+      <div class="options">
+        <button class="color-btn" data-color="red">Red</button>
+        <button class="color-btn" data-color="green">Green</button>
+        <button class="color-btn" data-color="blue">Blue</button>
+        <button class="size-btn" data-size="small">Small</button>
+        <button class="size-btn" data-size="medium">Medium</button>
+        <button class="size-btn" data-size="large">Large</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup" id="popup2">
+    <div class="popup-content">
+      <h3>Options for Box 2</h3>
+      <div class="options">
+        <button class="color-btn" data-color="red">Red</button>
+        <button class="color-btn" data-color="green">Green</button>
+        <button class="color-btn" data-color="blue">Blue</button>
+        <button class="size-btn" data-size="small">Small</button>
+        <button class="size-btn" data-size="medium">Medium</button>
+        <button class="size-btn" data-size="large">Large</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup" id="popup3">
+    <div class="popup-content">
+      <h3>Options for Box 3</h3>
+      <div class="options">
+        <button class="color-btn" data-color="red">Red</button>
+        <button class="color-btn" data-color="green">Green</button>
+        <button class="color-btn" data-color="blue">Blue</button>
+        <button class="size-btn" data-size="small">Small</button>
+        <button class="size-btn" data-size="medium">Medium</button>
+        <button class="size-btn" data-size="large">Large</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  const boxes = document.querySelectorAll('.box');
+  const popups = document.querySelectorAll('.popup');
+
+  // Function to close all popups
+  const closeAllPopups = () => {
+    popups.forEach(popup => popup.classList.remove('active'));
+  };
+
+  // Toggle box expansion and show popup
+  boxes.forEach((box, index) => {
+    box.addEventListener('click', (event) => {
+      // Prevent the event from bubbling up to the document
+      event.stopPropagation();
+
+      // Expand the clicked box
+      boxes.forEach(b => b.classList.remove('expanded')); // Collapse other boxes
+      box.classList.toggle('expanded');
+
+      // Show the corresponding popup
+      const popup = document.querySelector(`#popup${index + 1}`);
+      closeAllPopups(); // Close other popups
+      popup.classList.add('active');
+    });
+  });
+
+  // Add event listeners for color and size options
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const color = e.target.getAttribute('data-color');
+      const activePopupIndex = Array.from(popups).findIndex(popup => popup.classList.contains('active'));
+      if (activePopupIndex !== -1) {
+        const expandedBox = boxes[activePopupIndex];
+        expandedBox.style.backgroundColor = color;
+      }
+    });
+  });
+
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const size = e.target.getAttribute('data-size');
+      const activePopupIndex = Array.from(popups).findIndex(popup => popup.classList.contains('active'));
+      if (activePopupIndex !== -1) {
+        const expandedBox = boxes[activePopupIndex];
+        if (size === 'small') {
+          expandedBox.style.width = '150px';
+          expandedBox.style.height = '100px';
+        } else if (size === 'medium') {
+          expandedBox.style.width = '200px';
+          expandedBox.style.height = '130px';
+        } else if (size === 'large') {
+          expandedBox.style.width = '250px';
+          expandedBox.style.height = '150px';
+        }
+      }
+    });
+  });
+
+  // Close all popups when clicking outside
+  document.addEventListener('click', () => {
+    closeAllPopups();
+    boxes.forEach(box => box.classList.remove('expanded')); // Collapse all boxes
+  });
+
+  // Prevent clicks inside the popup from closing it
+  popups.forEach(popup => {
+    popup.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+  });
+</script>
+
+
+</html>
+
